@@ -93,7 +93,7 @@ public class GameInput : MonoBehaviour {
     {
          
         Vector2 inputVector = playerInputActions.Player.Look.ReadValue<Vector2>();
-        Debug.Log(inputVector);
+       
         return inputVector;
     }
 
