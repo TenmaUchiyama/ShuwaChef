@@ -2,13 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static CuttingCounter;
 
-public class StoveCounter : BaseCounter, IHasProgress {
+public class StoveCounter : BaseCounter, IHasProgress , IToolObjectParent{
 
+
+    [SerializeField] private Transform panPoint;
+    private ToolObject panToolObject;
 
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
+    
+
+    
     public class OnStateChangedEventArgs : EventArgs {
         public State state;
     }
@@ -94,10 +99,36 @@ public class StoveCounter : BaseCounter, IHasProgress {
         }
     }
 
+
+    public override void InteractAlternate(Player player)
+    {
+       if(!HasKitchenObject())
+       {
+         if(player.HasToolObject() && player.GetToolObject().GetToolObjectSO().objectName == "Pan")
+         {
+        
+               player.GetToolObject().SetToolObjectParent(this);
+
+         }
+         else
+         {
+             Debug.LogError("You can only use pan here");
+         }
+       }
+    }
+
     public override void Interact(Player player) {
+
+        
         if (!HasKitchenObject()) {
             // There is no KitchenObject here
             if (player.HasKitchenObject()) {
+
+                if(!this.HasToolObject())
+                {
+                    Debug.LogError("You need to use pan to fry");
+                    return;
+                }
                 // Player is carrying something
                 if (HasRecipeWithInput(player.GetKitchenObject().GetKitchenObjectSO())) {
                     // Player carrying something that can be Fried
@@ -129,6 +160,8 @@ public class StoveCounter : BaseCounter, IHasProgress {
                         GetKitchenObject().DestroySelf();
 
                         state = State.Idle;
+                        this.panToolObject.DestroySelf();
+
 
                         OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
                             state = state
@@ -144,6 +177,8 @@ public class StoveCounter : BaseCounter, IHasProgress {
                 GetKitchenObject().SetKitchenObjectParent(player);
 
                 state = State.Idle;
+
+                this.panToolObject.DestroySelf();
 
                 OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
                     state = state
@@ -193,4 +228,36 @@ public class StoveCounter : BaseCounter, IHasProgress {
         return state == State.Fried;
     }
 
+    public Transform GetToolObjectFollowTransform()
+    {
+        return panPoint;
+    }
+
+    public void SetToolObject(ToolObject toolObject)
+    {
+        ToolObjectSO toolObjectSO = toolObject.GetToolObjectSO();
+        if(toolObjectSO.objectName != "Pan")
+        {
+            Debug.LogError("You can only use pan here");
+            return;
+        }
+
+        this.panToolObject = toolObject;
+
+    }
+
+    public ToolObject GetToolObject()
+    {
+        return this.panToolObject;
+    }
+
+    public void ClearToolObject()
+    {
+        this.panToolObject = null;
+    }
+
+    public bool HasToolObject()
+    {
+        return this.panToolObject != null;
+    }
 }

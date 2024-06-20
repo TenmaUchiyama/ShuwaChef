@@ -33,7 +33,7 @@ public class KitchenGameManager : MonoBehaviour {
     private void Awake() {
         Instance = this;
 
-        state = State.GamePlaying;
+        state = State.WaitingToStart;
     }
 
     private void Start() {
