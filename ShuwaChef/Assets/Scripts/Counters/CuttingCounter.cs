@@ -68,6 +68,9 @@ public class CuttingCounter : BaseCounter, IHasProgress {
           Debug.LogError("You don't have knife");
           return; 
         }
+
+        Debug.Log($"<color = yellow>KitchenObject: {HasKitchenObject()}</color>");
+        Debug.Log($"<color = yellow>Recipe: {HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO())}</color>");
         if (HasKitchenObject() && HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO())) {
             // There is a KitchenObject here AND it can be cut
             cuttingProgress++;

@@ -125,7 +125,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent,IToolObjectParent
         Vector3 rayDirection = mainCameraTransform.forward;
         Debug.DrawRay(mainCameraTransform.position, rayDirection * interactDistance, Color.red);
 
-        if (Physics.Raycast(mainCameraTransform.position, rayDirection, out RaycastHit raycastHit, interactDistance, countersLayerMask)) {
+        if (Physics.Raycast(mainCameraTransform.position, rayDirection * interactDistance, out RaycastHit raycastHit, interactDistance, countersLayerMask)) {
             if (raycastHit.transform.TryGetComponent(out BaseCounter baseCounter)) {
                 // Has ClearCounter
                 if (baseCounter != selectedCounter) {
