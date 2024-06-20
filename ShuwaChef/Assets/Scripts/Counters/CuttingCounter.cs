@@ -60,6 +60,13 @@ public class CuttingCounter : BaseCounter, IHasProgress {
     }
 
     public override void InteractAlternate(Player player) {
+
+
+        if(!(player.HasToolObject() && player.GetToolObject().GetToolObjectSO().objectName == "Knife"))
+        {
+          Debug.LogError("You don't have knife");
+          return; 
+        }
         if (HasKitchenObject() && HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO())) {
             // There is a KitchenObject here AND it can be cut
             cuttingProgress++;

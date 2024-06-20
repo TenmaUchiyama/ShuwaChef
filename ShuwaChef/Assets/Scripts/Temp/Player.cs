@@ -6,18 +6,18 @@ using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
-public class Player : MonoBehaviour, IKitchenObjectParent
+public class Player : MonoBehaviour, IKitchenObjectParent,IToolObjectParent
 {
    
     [SerializeField] private float speed = 7f;
+    [SerializeField] ObjectSpawner objectSpawner;
 
 
     public static Player Instance { get; private set; }
     CharacterController characterController;
 
 
-    [SerializeField] private List<KitchenObjectSO> ingredientList;
-    [SerializeField] private List<ToolObjectSO> toolList;
+
 
     
 
@@ -33,6 +33,9 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private LayerMask countersLayerMask;
     [SerializeField] private Transform kitchenObjectHoldPoint;
+    [SerializeField] private Transform toolObjectHoldPoint;
+
+    
 
 
     private bool isWalking;
@@ -43,8 +46,6 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private ToolObject toolObject; 
 
 
-    [SerializeField] private ToolObjectSOList toolObjectSOList;
-    [SerializeField] private KitchenObjectSOList ingredientSOList;
 
     private void Awake() {
         if (Instance != null) {
@@ -57,11 +58,30 @@ public class Player : MonoBehaviour, IKitchenObjectParent
         this.characterController = GetComponent<CharacterController>();
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
         GameInput.Instance.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
-        {
-            
-        }
+        objectSpawner.OnSpawnToolObject += ObjectSpawner_OnSpawnToolObject;
+        objectSpawner.OnSpawnKitchenObject += ObjectSpawner_OnKitchenObjectSpawned;
     }
 
+    private void ObjectSpawner_OnKitchenObjectSpawned(object sender, ObjectSpawner.OnSpawnKitchenObjectArg e)
+    {
+       if(this.HasKitchenObject())
+        {
+            this.kitchenObject.DestroySelf();
+        }
+        KitchenObject.SpawnKitchenObject(e.kitchenObject.GetKitchenObjectSO(), this);
+    }
+
+    private void ObjectSpawner_OnSpawnToolObject(object sender, ObjectSpawner.OnSpawnToolObjectArg e)
+    {
+      
+ 
+        
+        if(this.HasToolObject())
+        {
+            this.toolObject.DestroySelf();
+        }
+        ToolObject.SpawnToolObject(e.toolObject.GetToolObjectSO(), this);
+    }
 
     private void GameInput_OnInteractAlternateAction(object sender, EventArgs e) {
         // if (!KitchenGameManager.Instance.IsGamePlaying()) return;
@@ -83,54 +103,10 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private void Update() {
         HandleMovement();
         HandleInteractions();
-        HandleObjectSpawn();
-
  
     }
 
-    private void HandleObjectSpawn()
-    {
-       
-         if(Input.GetKeyDown(KeyCode.Alpha1)) 
-         {
-          
-            ToolObjectSO toolObjectSO = toolObjectSOList.toolObjectSOList.Find(x => x.objectName == "Pan");
-            ToolObject.SpawnKitchenObject(toolObjectSO, this);
-         
-         }
-         if(Input.GetKeyDown(KeyCode.Alpha2)) 
-         {
-            ToolObjectSO toolObject = toolList.Find(x => x.objectName == "Knife");
-            ToolObject.SpawnKitchenObject(toolObject, this);
-            
-         }
-         if(Input.GetKeyDown(KeyCode.Alpha3)) 
-         {
-            KitchenObjectSO kitchenObject = ingredientList.Find(x => x.objectName == "Tomato");
-            KitchenObject.SpawnKitchenObject(kitchenObject, this);
-         }
-         if(Input.GetKeyDown(KeyCode.Alpha4)) 
-         {
-            KitchenObjectSO kitchenObject = ingredientList.Find(x => x.objectName == "Cabbage");
-            KitchenObject.SpawnKitchenObject(kitchenObject, this);
-         }
-         if(Input.GetKeyDown(KeyCode.Alpha5)) 
-         {
-KitchenObjectSO kitchenObject = ingredientList.Find(x => x.objectName == "Cheese");
-            KitchenObject.SpawnKitchenObject(kitchenObject, this);
-         }
-         if(Input.GetKeyDown(KeyCode.Alpha6)) 
-         {
-KitchenObjectSO kitchenObject = ingredientList.Find(x => x.objectName == "Meat Patty Uncooked");
-            KitchenObject.SpawnKitchenObject(kitchenObject, this);
-         }
-         if(Input.GetKeyDown(KeyCode.Alpha7)) 
-         {
-KitchenObjectSO kitchenObject = ingredientList.Find(x => x.objectName == "Bread");
-            KitchenObject.SpawnKitchenObject(kitchenObject, this);
-         }
-    }
-
+ 
     public bool IsWalking() {
         return isWalking;
     }
@@ -173,8 +149,6 @@ KitchenObjectSO kitchenObject = ingredientList.Find(x => x.objectName == "Bread"
             
             characterController.Move(transform.TransformDirection(moveDir) * speed * Time.deltaTime);
 
-
-
     }
 
     private void SetSelectedCounter(BaseCounter selectedCounter) {
@@ -187,6 +161,11 @@ KitchenObjectSO kitchenObject = ingredientList.Find(x => x.objectName == "Bread"
 
     public Transform GetKitchenObjectFollowTransform() {
         return kitchenObjectHoldPoint;
+    }
+
+
+    public Transform GetToolObjectFollowTransform() {
+        return toolObjectHoldPoint;
     }
 
     public void SetKitchenObject(KitchenObject kitchenObject) {
@@ -209,4 +188,27 @@ KitchenObjectSO kitchenObject = ingredientList.Find(x => x.objectName == "Bread"
         return kitchenObject != null;
     }
 
+    public void SetToolObject(ToolObject toolObject)
+    {
+        this.toolObject = toolObject;
+
+        if ( this.toolObject != null) {
+            OnPickedSomething?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public ToolObject GetToolObject()
+    {
+        return this.toolObject;
+    }
+
+    public void ClearToolObject()
+    {
+        this.toolObject = null;
+    }
+
+    public bool HasToolObject()
+    {
+        return this.toolObject != null;
+    }
 }
