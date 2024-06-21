@@ -18,7 +18,6 @@ public class SelectedCounterVisual : MonoBehaviour {
             Show();
         } else {
 
-            Debug.Log("hello");
             Hide();
         }
     }
