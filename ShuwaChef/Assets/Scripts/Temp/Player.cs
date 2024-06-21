@@ -101,6 +101,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent,IToolObjectParent
     }
 
     private void Update() {
+        if(!KitchenGameManager.Instance.IsGamePlaying()) return;
         HandleMovement();
         HandleInteractions();
  
