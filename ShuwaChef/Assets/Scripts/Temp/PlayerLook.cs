@@ -17,7 +17,7 @@ public class PlayerLook : MonoBehaviour
 
 
         Vector2 mouseDelta = GameInput.Instance.GetMouseMoveDelta();
-        Debug.Log(mouseDelta);
+  
         float mouseX = mouseDelta.x; 
         float mouseY = mouseDelta.y; 
 

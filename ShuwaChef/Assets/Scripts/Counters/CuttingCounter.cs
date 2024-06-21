@@ -55,11 +55,24 @@ public class CuttingCounter : BaseCounter, IHasProgress {
             } else {
                 // Player is not carrying anything
                 GetKitchenObject().SetKitchenObjectParent(player);
+            
             }
         }
     }
 
+
+
     public override void InteractAlternate(Player player) {
+
+
+        if(!(player.HasToolObject() && player.GetToolObject().GetToolObjectSO().objectName == "Knife"))
+        {
+          Debug.LogError("You need a knife");
+          return; 
+        }
+
+        Debug.Log($"<color = yellow>KitchenObject: {HasKitchenObject()}</color>");
+        Debug.Log($"<color = yellow>Recipe: {HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO())}</color>");
         if (HasKitchenObject() && HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO())) {
             // There is a KitchenObject here AND it can be cut
             cuttingProgress++;

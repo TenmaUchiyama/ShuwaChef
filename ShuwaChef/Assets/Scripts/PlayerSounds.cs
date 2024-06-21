@@ -5,13 +5,13 @@ using UnityEngine;
 public class PlayerSounds : MonoBehaviour {
 
 
-    private TempPlayer player;
+    private Player player;
     private float footstepTimer;
     private float footstepTimerMax = .1f;
 
 
     private void Awake() {
-        player = GetComponent<TempPlayer>();
+        player = GetComponent<Player>();
     }
 
     private void Update() {
@@ -19,7 +19,7 @@ public class PlayerSounds : MonoBehaviour {
         if (footstepTimer < 0f) {
             footstepTimer = footstepTimerMax;
 
-            if (player.GetIsWalking()) {
+            if (player.IsWalking()) {
                 float volume = 0.5f;
                 SoundManager.Instance.PlayFootstepsSound(player.transform.position, volume);
             }

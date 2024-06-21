@@ -1,12 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
-public class Player : MonoBehaviour, IKitchenObjectParent {
+public class Player : MonoBehaviour, IKitchenObjectParent,IToolObjectParent
+{
+   
+    [SerializeField] private float speed = 7f;
+    [SerializeField] ObjectSpawner objectSpawner;
 
 
     public static Player Instance { get; private set; }
+    CharacterController characterController;
+
+
+
+
+    
 
 
 
@@ -18,15 +31,20 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
 
 
     [SerializeField] private float moveSpeed = 7f;
-    [SerializeField] private GameInput gameInput;
     [SerializeField] private LayerMask countersLayerMask;
     [SerializeField] private Transform kitchenObjectHoldPoint;
+    [SerializeField] private Transform toolObjectHoldPoint;
+
+    
 
 
     private bool isWalking;
     private Vector3 lastInteractDir;
     private BaseCounter selectedCounter;
+
     private KitchenObject kitchenObject;
+    private ToolObject toolObject; 
+
 
 
     private void Awake() {
@@ -37,12 +55,36 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
     }
 
     private void Start() {
-        gameInput.OnInteractAction += GameInput_OnInteractAction;
-        gameInput.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
+        this.characterController = GetComponent<CharacterController>();
+        GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
+        GameInput.Instance.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
+        objectSpawner.OnSpawnToolObject += ObjectSpawner_OnSpawnToolObject;
+        objectSpawner.OnSpawnKitchenObject += ObjectSpawner_OnKitchenObjectSpawned;
+    }
+
+    private void ObjectSpawner_OnKitchenObjectSpawned(object sender, ObjectSpawner.OnSpawnKitchenObjectArg e)
+    {
+       if(this.HasKitchenObject())
+        {
+            this.kitchenObject.DestroySelf();
+        }
+        KitchenObject.SpawnKitchenObject(e.kitchenObject.GetKitchenObjectSO(), this);
+    }
+
+    private void ObjectSpawner_OnSpawnToolObject(object sender, ObjectSpawner.OnSpawnToolObjectArg e)
+    {
+      
+ 
+        
+        if(this.HasToolObject())
+        {
+            this.toolObject.DestroySelf();
+        }
+        ToolObject.SpawnToolObject(e.toolObject.GetToolObjectSO(), this);
     }
 
     private void GameInput_OnInteractAlternateAction(object sender, EventArgs e) {
-        if (!KitchenGameManager.Instance.IsGamePlaying()) return;
+        // if (!KitchenGameManager.Instance.IsGamePlaying()) return;
 
         if (selectedCounter != null) {
             selectedCounter.InteractAlternate(this);
@@ -50,7 +92,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
     }
 
     private void GameInput_OnInteractAction(object sender, System.EventArgs e) {
-        if (!KitchenGameManager.Instance.IsGamePlaying()) return;
+        
+        // if (!KitchenGameManager.Instance.IsGamePlaying()) return;
 
         if (selectedCounter != null) {
             selectedCounter.Interact(this);
@@ -60,14 +103,16 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
     private void Update() {
         HandleMovement();
         HandleInteractions();
+ 
     }
 
+ 
     public bool IsWalking() {
         return isWalking;
     }
 
     private void HandleInteractions() {
-        Vector2 inputVector = gameInput.GetMovementVectorNormalized();
+        Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
 
         Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
 
@@ -76,7 +121,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
         }
 
         float interactDistance = 2f;
-        if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, countersLayerMask)) {
+        Transform mainCameraTransform = Camera.main.transform;
+        Vector3 rayDirection = mainCameraTransform.forward;
+        Debug.DrawRay(mainCameraTransform.position, rayDirection * interactDistance, Color.red);
+
+        if (Physics.Raycast(mainCameraTransform.position, rayDirection * interactDistance, out RaycastHit raycastHit, interactDistance, countersLayerMask)) {
             if (raycastHit.transform.TryGetComponent(out BaseCounter baseCounter)) {
                 // Has ClearCounter
                 if (baseCounter != selectedCounter) {
@@ -92,49 +141,14 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
     }
 
     private void HandleMovement() {
-        Vector2 inputVector = gameInput.GetMovementVectorNormalized();
+            Vector2 inputVector = GameInput.Instance.GetMovementVectorNormalized();
+         
 
-        Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
+            Vector3 moveDir = new Vector3(inputVector.x, 0f, inputVector.y);
+            isWalking = moveDir != Vector3.zero;
+            
+            characterController.Move(transform.TransformDirection(moveDir) * speed * Time.deltaTime);
 
-        float moveDistance = moveSpeed * Time.deltaTime;
-        float playerRadius = .7f;
-        float playerHeight = 2f;
-        bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDir, moveDistance);
-
-        if (!canMove) {
-            // Cannot move towards moveDir
-
-            // Attempt only X movement
-            Vector3 moveDirX = new Vector3(moveDir.x, 0, 0).normalized;
-            canMove = (moveDir.x < -.5f || moveDir.x > +.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
-
-            if (canMove) {
-                // Can move only on the X
-                moveDir = moveDirX;
-            } else {
-                // Cannot move only on the X
-
-                // Attempt only Z movement
-                Vector3 moveDirZ = new Vector3(0, 0, moveDir.z).normalized;
-                canMove = (moveDir.z < -.5f || moveDir.z > +.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance);
-
-                if (canMove) {
-                    // Can move only on the Z
-                    moveDir = moveDirZ;
-                } else {
-                    // Cannot move in any direction
-                }
-            }
-        }
-
-        if (canMove) {
-            transform.position += moveDir * moveDistance;
-        }
-
-        isWalking = moveDir != Vector3.zero;
-
-        float rotateSpeed = 10f;
-        transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime * rotateSpeed);
     }
 
     private void SetSelectedCounter(BaseCounter selectedCounter) {
@@ -147,6 +161,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
 
     public Transform GetKitchenObjectFollowTransform() {
         return kitchenObjectHoldPoint;
+    }
+
+
+    public Transform GetToolObjectFollowTransform() {
+        return toolObjectHoldPoint;
     }
 
     public void SetKitchenObject(KitchenObject kitchenObject) {
@@ -169,4 +188,27 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
         return kitchenObject != null;
     }
 
+    public void SetToolObject(ToolObject toolObject)
+    {
+        this.toolObject = toolObject;
+
+        if ( this.toolObject != null) {
+            OnPickedSomething?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public ToolObject GetToolObject()
+    {
+        return this.toolObject;
+    }
+
+    public void ClearToolObject()
+    {
+        this.toolObject = null;
+    }
+
+    public bool HasToolObject()
+    {
+        return this.toolObject != null;
+    }
 }
