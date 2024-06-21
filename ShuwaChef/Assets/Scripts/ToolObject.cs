@@ -17,7 +17,6 @@ public class ToolObject : MonoBehaviour
         }
 
         this.toolObjectParent = toolObjectParent;
-          Debug.Log(this.toolObjectParent.GetToolObject());
         if (toolObjectParent.HasToolObject()) {
             Debug.LogError("ToolObjectParent already has a ToolObject!");
         }

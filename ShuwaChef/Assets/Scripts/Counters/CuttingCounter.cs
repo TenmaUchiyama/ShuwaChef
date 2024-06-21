@@ -60,12 +60,14 @@ public class CuttingCounter : BaseCounter, IHasProgress {
         }
     }
 
+
+
     public override void InteractAlternate(Player player) {
 
 
         if(!(player.HasToolObject() && player.GetToolObject().GetToolObjectSO().objectName == "Knife"))
         {
-          Debug.LogError("You don't have knife");
+          Debug.LogError("You need a knife");
           return; 
         }
 
