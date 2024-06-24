@@ -54,11 +54,17 @@ class TranslatorManager():
 
         for txt in txt_files:
             arr = np.loadtxt(txt)
-            knn_database.extend(arr)
-            knn_labels.extend([txt.stem] * len(arr))
+            # arrが2次元であることを確認し、そうでない場合はreshape
+            if arr.ndim == 1:
+                arr = arr.reshape(-1, 336)
+            knn_database.append(arr)
+            knn_labels.extend([txt.stem] * arr.shape[0])
 
-        self.knn_database = np.stack(knn_database)
+        # knn_databaseを2次元配列に変換
+        self.knn_database = np.vstack(knn_database)
         self.knn_labels = np.array(knn_labels)
+
+      
 
         return True
 
@@ -96,17 +102,20 @@ class TranslatorManager():
         return feats_out.numpy().squeeze()
 
     def run_knn(self, feats: npt.ArrayLike, k=5):
-
+        
+        
         dists = np.square(self.knn_database - feats)
         dists = np.sqrt(np.sum(dists, axis=-1))
+
 
         # top k nearst samples.
         top_indices = np.argsort(dists)[:k]
         top_lables = self.knn_labels[top_indices]
 
-        # mode.
-        vals, counts = np.unique(top_lables, return_counts=True)
-        index = np.argmax(counts)
-        res_txt = vals[index]
 
-        return res_txt
+        return {
+            "top_indices" : top_indices.tolist(), 
+            "top_labels" : top_lables.tolist(),
+            "dists" : dists.tolist()
+        }
+
