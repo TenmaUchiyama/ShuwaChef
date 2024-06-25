@@ -54,11 +54,17 @@ class TranslatorManager():
 
         for txt in txt_files:
             arr = np.loadtxt(txt)
-            knn_database.extend(arr)
-            knn_labels.extend([txt.stem] * len(arr))
+            # arrが2次元であることを確認し、そうでない場合はreshape
+            if arr.ndim == 1:
+                arr = arr.reshape(-1, 336)
+            knn_database.append(arr)
+            knn_labels.extend([txt.stem] * arr.shape[0])
 
-        self.knn_database = np.stack(knn_database)
+        # knn_databaseを2次元配列に変換
+        self.knn_database = np.vstack(knn_database)
         self.knn_labels = np.array(knn_labels)
+
+      
 
         return True
 
@@ -94,19 +100,40 @@ class TranslatorManager():
             vid_res["rh_frames"][np.newaxis]
         ])
         return feats_out.numpy().squeeze()
+    
+    def softmax(self,x):
+        e_x = np.exp(x - np.max(x))  # For numerical stability
+        return 1- e_x / e_x.sum(axis=0)
 
-    def run_knn(self, feats: npt.ArrayLike, k=5):
-
+    def run_knn(self, feats: npt.ArrayLike, k=3):
+        
+        
         dists = np.square(self.knn_database - feats)
         dists = np.sqrt(np.sum(dists, axis=-1))
+       
+        probabilities = self.softmax(dists)
+
 
         # top k nearst samples.
         top_indices = np.argsort(dists)[:k]
-        top_lables = self.knn_labels[top_indices]
+        top_lables = self.knn_labels 
+        
 
-        # mode.
-        vals, counts = np.unique(top_lables, return_counts=True)
-        index = np.argmax(counts)
-        res_txt = vals[index]
+        output_label = []
+        output_probs = []
 
-        return res_txt
+
+       
+
+        for i in range(k):
+            output_label.append(top_lables[top_indices[i]])
+            output_probs.append(probabilities[top_indices[i]])
+        
+
+        
+
+        return {
+            "top_indices" : top_indices.tolist(), 
+            "top_labels" : output_label,
+            "dists" : output_probs        }
+

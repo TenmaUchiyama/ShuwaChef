@@ -1,7 +1,22 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using static DetectedObjectUI;
+
+
+
+[Serializable]
+public class ShuwaDetectorData
+{
+    public List<int> top_indices ;
+    public List<string> top_labels;
+    public List<float> dists ;
+}
+
+
+
 
 public class ObjectSpawner : MonoBehaviour
 {
@@ -11,9 +26,14 @@ public class ObjectSpawner : MonoBehaviour
 
     [SerializeField] private List<ToolObject> toolObjectList;
     [SerializeField] private List<KitchenObject> kitchenObjectList;
+    [SerializeField] private GameObject recordingLabel;
+
+ 
 
     private SocketCommunicator socketCommunicator;
-
+    [SerializeField] private DetectedObjectUI detectedObjectUI;
+    [SerializeField] private Sprite idleSprite;
+    
 
     public event EventHandler<OnSpawnToolObjectArg> OnSpawnToolObject;
     
@@ -26,21 +46,104 @@ public class ObjectSpawner : MonoBehaviour
         public KitchenObject kitchenObject;
     }
 
+    public event EventHandler OnIdleDetected;
+
+
 
     private void Start() {
-          Application.runInBackground = true;
+
+
+
+         
+        Application.runInBackground = true; 
+
         socketCommunicator = GetComponent<SocketCommunicator>();
      
         socketCommunicator.OnSocketMessageReceive += SocketCommunicator_OnSocketMessageReceived;
+        GameInput.Instance.OnRecordAction += GameInput_OnRecordAction;
     }
+   
+
+
+
+
+    private void GameInput_OnRecordAction(object sender, EventArgs e)
+    {
+        if(!KitchenGameManager.Instance.IsGamePlaying())
+        {
+            return;
+        }
+       socketCommunicator.RecordRequest();
+    }
+
+
+    
+
 
     private void SocketCommunicator_OnSocketMessageReceived(object sender, SocketCommunicator.OnSocketMessageReceiveArg e)
     {
-        HandleObjectSpawn(e.message);
+
+
+        Debug.Log($"<color=yellow>{e.message}</color>");
+
+        
+        if(e.message == "record")
+        {
+          Debug.Log("Recording");
+            recordingLabel.SetActive(true);
+          return;
+        }
+        recordingLabel.SetActive(false);
+
+    
+        
+
+
+
+
+        ShuwaDetectorData shuwaDetectorData = JsonUtility.FromJson<ShuwaDetectorData>(e.message);
+
+        string spawnObject = shuwaDetectorData.top_labels[0];
+
+
+
+        List<DetectedObject> detectedObjects = new List<DetectedObject>();
+          for(int i = 0 ; i< 3 ; i++)
+         {
+
+           
+            
+            ToolObject toolObject = toolObjectList.Find(x => x.GetToolObjectSO().objectName == shuwaDetectorData.top_labels[i]);
+            KitchenObject kitchenObject = kitchenObjectList.Find(x => x.GetKitchenObjectSO().objectName == shuwaDetectorData.top_labels[i]);
+    
+            if(toolObject)
+            {
+                DetectedObject detectedObject = new DetectedObject(){name = toolObject.GetToolObjectSO().objectName, sprite = toolObject.GetToolObjectSO().sprite, probability = shuwaDetectorData.dists[i]};
+                detectedObjects.Add(detectedObject);
+            }else if(kitchenObject){
+                DetectedObject detectedObject = new DetectedObject(){name = kitchenObject.GetKitchenObjectSO().objectName, sprite = kitchenObject.GetKitchenObjectSO().sprite, probability = shuwaDetectorData.dists[i]};
+                detectedObjects.Add(detectedObject);
+            }else{
+                DetectedObject detectedObject = new DetectedObject(){name = "Idle", sprite = idleSprite, probability = shuwaDetectorData.dists[i]};
+                detectedObjects.Add(detectedObject);
+            }
+            
+            
+         }
+
+        detectedObjectUI.SetDetectedObject(detectedObjects);
+
+        
+        HandleObjectSpawn(spawnObject);
     }
 
 
 
+
+
+    
+
+  
     private void HandleObjectSpawn(string spawnObject)
     {
 
@@ -66,6 +169,15 @@ public class ObjectSpawner : MonoBehaviour
                 kitchenObject = kitchenObject
             });
         }
+
+
+        if(!toolObject && !kitchenObject)
+        {
+            OnIdleDetected?.Invoke(this, EventArgs.Empty);
+        }
+
+
+
         
 
 
@@ -73,9 +185,11 @@ public class ObjectSpawner : MonoBehaviour
 
 
 
-    private void Update() {
-        TestSpanw();
-    }
+    // private void Update() {
+    //     TestSpanw();
+
+
+    // }
 
 
 

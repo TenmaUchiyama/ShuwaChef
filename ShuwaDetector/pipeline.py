@@ -27,7 +27,7 @@ class Pipeline:
 
     def __init__(self):
         super().__init__()
-        self.is_recording = True
+        self.is_recording = False
         self.knn_records = []
         self.holistic_manager = holistic.HolisticManager()
         self.translator_manager = translator.TranslatorManager()

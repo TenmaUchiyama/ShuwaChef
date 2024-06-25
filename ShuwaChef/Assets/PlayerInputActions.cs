@@ -80,6 +80,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Record"",
+                    ""type"": ""Button"",
+                    ""id"": ""ea5cfd8c-f432-45ef-9bf8-7bad1e260df3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -228,6 +237,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""21cc0c38-adb1-4e19-aa46-740ebba3d5c5"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""55026678-500a-4ee6-ac4a-68cfda2a3a56"",
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
@@ -241,6 +261,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""b2aedbe4-155b-433d-b39d-01f25f42d1ae"",
                     ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InteractAlternate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4b7bdfdd-c893-4a50-8e33-53516d2b7e52"",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -291,6 +322,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""TestKnife"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b441d451-ffcb-4bac-8984-a92b59578a2c"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Record"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -305,6 +347,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_TestKnife = m_Player.FindAction("TestKnife", throwIfNotFound: true);
+        m_Player_Record = m_Player.FindAction("Record", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -372,6 +415,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Pause;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_TestKnife;
+    private readonly InputAction m_Player_Record;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -382,6 +426,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @TestKnife => m_Wrapper.m_Player_TestKnife;
+        public InputAction @Record => m_Wrapper.m_Player_Record;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -409,6 +454,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @TestKnife.started += instance.OnTestKnife;
             @TestKnife.performed += instance.OnTestKnife;
             @TestKnife.canceled += instance.OnTestKnife;
+            @Record.started += instance.OnRecord;
+            @Record.performed += instance.OnRecord;
+            @Record.canceled += instance.OnRecord;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -431,6 +479,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @TestKnife.started -= instance.OnTestKnife;
             @TestKnife.performed -= instance.OnTestKnife;
             @TestKnife.canceled -= instance.OnTestKnife;
+            @Record.started -= instance.OnRecord;
+            @Record.performed -= instance.OnRecord;
+            @Record.canceled -= instance.OnRecord;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -456,5 +507,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnPause(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnTestKnife(InputAction.CallbackContext context);
+        void OnRecord(InputAction.CallbackContext context);
     }
 }

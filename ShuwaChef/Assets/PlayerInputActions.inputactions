@@ -58,6 +58,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Record",
+                    "type": "Button",
+                    "id": "ea5cfd8c-f432-45ef-9bf8-7bad1e260df3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -206,6 +215,17 @@
                 },
                 {
                     "name": "",
+                    "id": "21cc0c38-adb1-4e19-aa46-740ebba3d5c5",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "55026678-500a-4ee6-ac4a-68cfda2a3a56",
                     "path": "<Keyboard>/f",
                     "interactions": "",
@@ -219,6 +239,17 @@
                     "name": "",
                     "id": "b2aedbe4-155b-433d-b39d-01f25f42d1ae",
                     "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "InteractAlternate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4b7bdfdd-c893-4a50-8e33-53516d2b7e52",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -267,6 +298,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "TestKnife",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b441d451-ffcb-4bac-8984-a92b59578a2c",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Record",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
