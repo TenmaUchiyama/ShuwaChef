@@ -3,10 +3,11 @@ import socket
 import threading
 from shuwa_detector import ShuwaDetector
 import json
+import time
 
 class ShuwaServer:
     def __init__(self, ip='localhost', port=8808):
-        self.shuwa_detector = ShuwaDetector()   
+        
 
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind((ip, port))
@@ -14,10 +15,12 @@ class ShuwaServer:
         print(f"Server listening on {ip}:{port}")
         connection_thread = threading.Thread(target=self.wait_for_connection)
         connection_thread.start()
-
+        self.shuwa_detector = ShuwaDetector()   
         # ShuwaDetector のメインループを別スレッドで実行
-        detector_thread = threading.Thread(target=self.shuwa_detector.main_loop)
-        detector_thread.start()
+        self.shuwa_detector.main_loop()
+        
+
+      
     
     def wait_for_connection(self):
         while True:
@@ -41,9 +44,9 @@ class ShuwaServer:
                     if response:
                         print(response)
                         res_json = json.dumps(response)
-                        client_socket.send(res_json.encode('utf-8'))
+                        client_socket.send(f"{res_json}".encode('utf-8'))
                     else:
-                        client_socket.send("Recording".encode('utf-8'))
+                        client_socket.send("record".encode('utf-8'))
 
 
 

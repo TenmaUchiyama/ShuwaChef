@@ -24,7 +24,7 @@ class ShuwaDetector(Pipeline):
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-        self.translator_manager.load_knn_database()   
+        self.translator_manager.load_knn_database()  
     
     def __del__(self):
         if self.cap.isOpened():
@@ -69,7 +69,8 @@ class ShuwaDetector(Pipeline):
             ret, frame = self.cap.read()
             if not ret:
                 break
-            
+
+                    
             frame = utils.crop_utils.crop_square(frame)
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -90,12 +91,9 @@ class ShuwaDetector(Pipeline):
         cv2.destroyAllWindows()
 
 
+if __name__ == "__main__":
+    shuwa_detector = ShuwaDetector()
+    keyboard.on_press_key("space", lambda e: shuwa_detector.on_record())
+    shuwa_detector.main_loop()
 
 
-
-
-
-# Create a ShuwaDetector object
-shuwaDetector = ShuwaDetector()
-# print(shuwaDetector.translator_manager.load_knn_database())
-shuwaDetector.main_loop()

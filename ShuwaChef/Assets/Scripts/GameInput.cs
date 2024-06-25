@@ -16,6 +16,7 @@ public class GameInput : MonoBehaviour {
     public event EventHandler OnInteractAlternateAction;
     public event EventHandler OnPauseAction;
     public event EventHandler OnBindingRebind;
+    public event EventHandler OnRecordAction;
 
     public event EventHandler OnTestKnifeDetected;
 
@@ -52,12 +53,12 @@ public class GameInput : MonoBehaviour {
         playerInputActions.Player.Interact.performed += Interact_performed;
         playerInputActions.Player.InteractAlternate.performed += InteractAlternate_performed;
         playerInputActions.Player.Pause.performed += Pause_performed;
-        playerInputActions.Player.TestKnife.performed += TestKnife_performed;
+        playerInputActions.Player.Record.performed += Record_performed;
     }
 
-    private void TestKnife_performed(InputAction.CallbackContext context)
+    private void Record_performed(InputAction.CallbackContext context)
     {
-        OnTestKnifeDetected.Invoke(this,EventArgs.Empty);
+        OnRecordAction?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnDestroy() {

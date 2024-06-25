@@ -5,11 +5,20 @@ using UnityEngine;
 public class ToolObject : MonoBehaviour
 {
     [SerializeField] private ToolObjectSO toolObjectSO;
+    [SerializeField] private string TriggerAnimationName = "Cut";
+
+    private Animator animator;
 
      private IToolObjectParent toolObjectParent;
 
      public ToolObjectSO GetToolObjectSO() {
         return toolObjectSO;
+    }
+
+
+    private void Start() {
+        animator = GetComponent<Animator>();
+    
     }
  public void SetToolObjectParent(IToolObjectParent toolObjectParent) {
         if (this.toolObjectParent != null) {
@@ -44,6 +53,12 @@ public class ToolObject : MonoBehaviour
         toolObject.SetToolObjectParent(toolObjectParent);
 
         return toolObject;
+    }
+
+
+    public void PlayAnimation() 
+    {
+        animator.SetTrigger(TriggerAnimationName);
     }
 
 }

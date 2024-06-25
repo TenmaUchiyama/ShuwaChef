@@ -60,6 +60,19 @@ public class Player : MonoBehaviour, IKitchenObjectParent,IToolObjectParent
         GameInput.Instance.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
         objectSpawner.OnSpawnToolObject += ObjectSpawner_OnSpawnToolObject;
         objectSpawner.OnSpawnKitchenObject += ObjectSpawner_OnKitchenObjectSpawned;
+        objectSpawner.OnIdleDetected += ObjectSpawner_OnIdleDetected;
+    }
+
+    private void ObjectSpawner_OnIdleDetected(object sender, EventArgs e)
+    {
+        if(this.HasKitchenObject())
+        {
+            this.kitchenObject.DestroySelf();
+        }
+        if(this.HasToolObject())
+        {
+            this.toolObject.DestroySelf();
+        }
     }
 
     private void ObjectSpawner_OnKitchenObjectSpawned(object sender, ObjectSpawner.OnSpawnKitchenObjectArg e)
@@ -83,9 +96,10 @@ public class Player : MonoBehaviour, IKitchenObjectParent,IToolObjectParent
         ToolObject.SpawnToolObject(e.toolObject.GetToolObjectSO(), this);
     }
 
-    private void GameInput_OnInteractAlternateAction(object sender, EventArgs e) {
-        // if (!KitchenGameManager.Instance.IsGamePlaying()) return;
+    
 
+    private void GameInput_OnInteractAlternateAction(object sender, EventArgs e) {
+      
         if (selectedCounter != null) {
             selectedCounter.InteractAlternate(this);
         }

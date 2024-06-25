@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using UnityEngine;
 
 public class KitchenGameManager : MonoBehaviour {
 
 
+    [SerializeField] private SocketCommunicator socketCommunicator;
     public static KitchenGameManager Instance { get; private set; }
 
 
@@ -39,9 +41,17 @@ public class KitchenGameManager : MonoBehaviour {
     private void Start() {
         GameInput.Instance.OnPauseAction += GameInput_OnPauseAction;
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
+
+        Cursor.visible = false; 
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void GameInput_OnInteractAction(object sender, EventArgs e) {
+        if(!socketCommunicator.GetIsConnectedToServer())
+        {
+            Debug.LogError("Not connected to server");
+            return; 
+        }
         if (state == State.WaitingToStart) {
             state = State.CountdownToStart;
             OnStateChanged?.Invoke(this, EventArgs.Empty);

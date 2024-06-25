@@ -76,7 +76,7 @@ public class CuttingCounter : BaseCounter, IHasProgress {
         if (HasKitchenObject() && HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO())) {
             // There is a KitchenObject here AND it can be cut
             cuttingProgress++;
-
+            player.GetToolObject().PlayAnimation();
             OnCut?.Invoke(this, EventArgs.Empty);
             OnAnyCut?.Invoke(this, EventArgs.Empty);
 
