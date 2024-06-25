@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Pan
   m_EditorClassIdentifier: 
   prefab: {fileID: 6321504217973136060, guid: 101f27ac1f379f143b28e4b538bce8ed, type: 3}
+  sprite: {fileID: 21300000, guid: a029e08dffdf4df4ebf699bf409bae01, type: 3}
   objectName: Pan

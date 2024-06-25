@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Knife
   m_EditorClassIdentifier: 
   prefab: {fileID: 3800551453905858985, guid: a6a6efe05aee6a7449a08e4123bda386, type: 3}
+  sprite: {fileID: 21300000, guid: e45ec98e0420a7842b3c002500f0dda3, type: 3}
   objectName: Knife
