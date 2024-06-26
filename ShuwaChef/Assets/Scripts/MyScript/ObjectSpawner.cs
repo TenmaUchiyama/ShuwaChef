@@ -30,7 +30,7 @@ public class ObjectSpawner : MonoBehaviour
 
  
 
-    private SocketCommunicator socketCommunicator;
+    private ShuwaServerCommunicator socketCommunicator;
     [SerializeField] private DetectedObjectUI detectedObjectUI;
     [SerializeField] private Sprite idleSprite;
     
@@ -57,7 +57,7 @@ public class ObjectSpawner : MonoBehaviour
          
         Application.runInBackground = true; 
 
-        socketCommunicator = GetComponent<SocketCommunicator>();
+        socketCommunicator = GetComponent<ShuwaServerCommunicator>();
      
         socketCommunicator.OnSocketMessageReceive += SocketCommunicator_OnSocketMessageReceived;
         GameInput.Instance.OnRecordAction += GameInput_OnRecordAction;
@@ -80,7 +80,7 @@ public class ObjectSpawner : MonoBehaviour
     
 
 
-    private void SocketCommunicator_OnSocketMessageReceived(object sender, SocketCommunicator.OnSocketMessageReceiveArg e)
+    private void SocketCommunicator_OnSocketMessageReceived(object sender, ShuwaServerCommunicator.OnSocketMessageReceiveArg e)
     {
 
 

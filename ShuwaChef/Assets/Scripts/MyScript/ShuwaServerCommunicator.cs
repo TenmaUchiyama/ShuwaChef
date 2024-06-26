@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class SocketCommunicator : MonoBehaviour
+public class ShuwaServerCommunicator : MonoBehaviour
 {
 
 
@@ -28,13 +28,13 @@ public class SocketCommunicator : MonoBehaviour
 
 
     
-    private async void Start()
+    private  void Start()
     {
-        await ConnectToServerAsync(ip,port);
+        ConnectToServerAsync(ip,port);
         _ = ReceiveMessagesAsync(); // メッセージの非同期受信を開始
     }
 
-    private async Task ConnectToServerAsync(string server, int port)
+    private async void ConnectToServerAsync(string server, int port)
     {
     int attempts = 0;
     while (true)
@@ -61,7 +61,6 @@ public class SocketCommunicator : MonoBehaviour
   
     }
 
-    Debug.LogError("All connection attempts failed.");
      
     }
 

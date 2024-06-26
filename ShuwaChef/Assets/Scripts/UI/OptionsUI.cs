@@ -13,6 +13,7 @@ public class OptionsUI : MonoBehaviour {
 
     [SerializeField] private Button soundEffectsButton;
     [SerializeField] private Button musicButton;
+    [SerializeField] private Button mouseSensitivity;
     [SerializeField] private Button closeButton;
     [SerializeField] private Button moveUpButton;
     [SerializeField] private Button moveDownButton;
@@ -26,6 +27,7 @@ public class OptionsUI : MonoBehaviour {
     [SerializeField] private Button gamepadPauseButton;
     [SerializeField] private TextMeshProUGUI soundEffectsText;
     [SerializeField] private TextMeshProUGUI musicText;
+    [SerializeField] private TextMeshProUGUI mouseSensitivityText;
     [SerializeField] private TextMeshProUGUI moveUpText;
     [SerializeField] private TextMeshProUGUI moveDownText;
     [SerializeField] private TextMeshProUGUI moveLeftText;
@@ -53,6 +55,18 @@ public class OptionsUI : MonoBehaviour {
             MusicManager.Instance.ChangeVolume();
             UpdateVisual();
         });
+
+        mouseSensitivity.onClick.AddListener(() => {
+            float[] sensitivies = PlayerLook.Instance.GetSensitivity();
+            if(sensitivies[0] >= 100)
+            {
+                sensitivies[0] = 0f;
+                sensitivies[1] = 0f;
+            }
+            PlayerLook.Instance.SetSensitivity(sensitivies[0] + 10f, sensitivies[1] + 10f);
+            UpdateVisual();
+        });
+
         closeButton.onClick.AddListener(() => {
             Hide();
             onCloseButtonAction();
@@ -77,15 +91,19 @@ public class OptionsUI : MonoBehaviour {
 
         HidePressToRebindKey();
         Hide();
+
+      
     }
 
     private void KitchenGameManager_OnGameUnpaused(object sender, System.EventArgs e) {
         Hide();
+    
     }
 
     private void UpdateVisual() {
         soundEffectsText.text = "Sound Effects: " + Mathf.Round(SoundManager.Instance.GetVolume() * 10f);
         musicText.text = "Music: " + Mathf.Round(MusicManager.Instance.GetVolume() * 10f);
+        mouseSensitivityText.text = "Mouse Sensitivity: " + Mathf.Round(PlayerLook.Instance.GetSensitivity()[0]); 
 
         moveUpText.text = GameInput.Instance.GetBindingText(GameInput.Binding.Move_Up);
         moveDownText.text = GameInput.Instance.GetBindingText(GameInput.Binding.Move_Down);

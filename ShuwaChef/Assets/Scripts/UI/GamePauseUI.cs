@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class GamePauseUI : MonoBehaviour {
@@ -33,6 +34,7 @@ public class GamePauseUI : MonoBehaviour {
 
     private void KitchenGameManager_OnGameUnpaused(object sender, System.EventArgs e) {
         Hide();
+        
     }
 
     private void KitchenGameManager_OnGamePaused(object sender, System.EventArgs e) {
@@ -40,12 +42,16 @@ public class GamePauseUI : MonoBehaviour {
     }
 
     private void Show() {
+
+       
         gameObject.SetActive(true);
 
         resumeButton.Select();
     }
 
     private void Hide() {
+
+       
         gameObject.SetActive(false);
     }
 

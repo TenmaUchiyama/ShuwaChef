@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerLook : MonoBehaviour
 {
+
+
+    public static PlayerLook Instance; 
     public Transform cameraTransform; 
     private float xRotation = 0f; 
 
@@ -12,6 +15,9 @@ public class PlayerController : MonoBehaviour
     public float ySensitivity = 30f;
 
 
+    private void Awake() {
+        Instance = this;
+    }
     public void Update()
     {
 
@@ -28,4 +34,17 @@ public class PlayerController : MonoBehaviour
 
         transform.Rotate(Vector3.up * mouseX * Time.deltaTime * xSensitivity);
     }
+
+
+    public  float[] GetSensitivity()
+    {
+        return new float[] {this.xSensitivity, this.ySensitivity};
+    } 
+
+    public void SetSensitivity(float xSensitivity, float ySensitivity)
+    {
+        this.xSensitivity = xSensitivity;
+        this.ySensitivity = ySensitivity;
+    }
+
 }

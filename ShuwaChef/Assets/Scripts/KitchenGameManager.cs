@@ -7,7 +7,7 @@ using UnityEngine;
 public class KitchenGameManager : MonoBehaviour {
 
 
-    [SerializeField] private SocketCommunicator socketCommunicator;
+    [SerializeField] private ShuwaServerCommunicator socketCommunicator;
     public static KitchenGameManager Instance { get; private set; }
 
 
@@ -42,8 +42,9 @@ public class KitchenGameManager : MonoBehaviour {
         GameInput.Instance.OnPauseAction += GameInput_OnPauseAction;
         GameInput.Instance.OnInteractAction += GameInput_OnInteractAction;
 
-        Cursor.visible = false; 
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+       
     }
 
     private void GameInput_OnInteractAction(object sender, EventArgs e) {
@@ -106,16 +107,25 @@ public class KitchenGameManager : MonoBehaviour {
         return 1 - (gamePlayingTimer / gamePlayingTimerMax);
     }
 
+    
     public void TogglePauseGame() {
+        Debug.Log($"<color=red>{isGamePaused}</color>");
+       
         isGamePaused = !isGamePaused;
         if (isGamePaused) {
             Time.timeScale = 0f;
-
             OnGamePaused?.Invoke(this, EventArgs.Empty);
+
+            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         } else {
             Time.timeScale = 1f;
-
+            
             OnGameUnpaused?.Invoke(this, EventArgs.Empty);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            
         }
     }
 
