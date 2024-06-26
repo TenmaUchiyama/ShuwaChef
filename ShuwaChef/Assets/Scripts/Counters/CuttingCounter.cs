@@ -40,7 +40,7 @@ public class CuttingCounter : BaseCounter, IHasProgress {
                     });
                 }
             } else {
-                // Player not carrying anything
+                
             }
         } else {
             // There is a KitchenObject here
@@ -67,12 +67,10 @@ public class CuttingCounter : BaseCounter, IHasProgress {
 
         if(!(player.HasToolObject() && player.GetToolObject().GetToolObjectSO().objectName == "Knife"))
         {
-          Debug.LogError("You need a knife");
+          SpawnTexts.Instance.SetDetectedObject("You need a knife to cut");
           return; 
         }
 
-        Debug.Log($"<color = yellow>KitchenObject: {HasKitchenObject()}</color>");
-        Debug.Log($"<color = yellow>Recipe: {HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO())}</color>");
         if (HasKitchenObject() && HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO())) {
             // There is a KitchenObject here AND it can be cut
             cuttingProgress++;

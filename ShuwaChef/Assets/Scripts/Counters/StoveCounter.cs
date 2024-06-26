@@ -112,7 +112,7 @@ public class StoveCounter : BaseCounter, IHasProgress , IToolObjectParent{
          }
          else
          {
-             Debug.LogError("You can only use pan here");
+            SpawnTexts.Instance.SetDetectedObject("You need a pan to fry");
          }
        }
     }
@@ -126,7 +126,7 @@ public class StoveCounter : BaseCounter, IHasProgress , IToolObjectParent{
 
                 if(!this.HasToolObject())
                 {
-                    Debug.LogError("You need to use pan to fry");
+                     SpawnTexts.Instance.SetDetectedObject("You need a pan to fry");
                     return;
                 }
                 // Player is carrying something
@@ -238,7 +238,7 @@ public class StoveCounter : BaseCounter, IHasProgress , IToolObjectParent{
         ToolObjectSO toolObjectSO = toolObject.GetToolObjectSO();
         if(toolObjectSO.objectName != "Pan")
         {
-            Debug.LogError("You can only use pan here");
+            SpawnTexts.Instance.SetDetectedObject("You can only use a pan here");
             return;
         }
 

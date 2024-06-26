@@ -185,11 +185,11 @@ public class ObjectSpawner : MonoBehaviour
 
 
 
-    // private void Update() {
-    //     TestSpanw();
+    private void Update() {
+        TestSpanw();
 
 
-    // }
+    }
 
 
 

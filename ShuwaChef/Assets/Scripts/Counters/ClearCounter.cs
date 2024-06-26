@@ -26,6 +26,8 @@ public class ClearCounter : BaseCounter {
                     if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO())) {
                         GetKitchenObject().DestroySelf();
                     }
+
+                   
                 } else {
                     // Player is not carrying Plate but something else
                     if (GetKitchenObject().TryGetPlate(out plateKitchenObject)) {
@@ -33,6 +35,8 @@ public class ClearCounter : BaseCounter {
                         if (plateKitchenObject.TryAddIngredient(player.GetKitchenObject().GetKitchenObjectSO())) {
                             player.GetKitchenObject().DestroySelf();
                         }
+                    }else{
+                         SpawnTexts.Instance.SetDetectedObject("Plate is full");
                     }
                 }
             } else {
