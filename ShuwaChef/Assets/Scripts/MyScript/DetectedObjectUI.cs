@@ -44,6 +44,8 @@ public class DetectedObjectUI : MonoBehaviour
        this.gameObject.SetActive(true);
 
         image1.sprite = detectedObjects[0].sprite;
+        var name = detectedObjects[0].name; 
+        
         probability1.text = $"{detectedObjects[0].name}: {detectedObjects[0].probability.ToString("0.00")}";
 
          image2.sprite = detectedObjects[1].sprite;
@@ -60,7 +62,10 @@ public class DetectedObjectUI : MonoBehaviour
    }
 
 
-
+   private string BeefConvert(string objName)
+   {
+      return objName == "Meat Patty Uncooked" ? "Beef" : objName;
+   }
 
    private IEnumerator SurviveTime() 
    {

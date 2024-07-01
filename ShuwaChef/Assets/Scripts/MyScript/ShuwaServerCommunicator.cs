@@ -10,7 +10,7 @@ public class ShuwaServerCommunicator : MonoBehaviour
 
 
     [SerializeField] private string ip = "localhost"; 
-    [SerializeField] private int port = 8808;
+    [SerializeField] private int port = 4531;
 
 
     private TcpClient client;
@@ -28,41 +28,45 @@ public class ShuwaServerCommunicator : MonoBehaviour
 
 
     
-    private  void Start()
+    private async void Start()
     {
-        ConnectToServerAsync(ip,port);
+        await ConnectToServerAsync(ip, port);
         _ = ReceiveMessagesAsync(); // メッセージの非同期受信を開始
     }
 
-    private async void ConnectToServerAsync(string server, int port)
+    private async Task ConnectToServerAsync(string server, int port)
     {
     int attempts = 0;
     while (true)
     {
-        try
-        {
-            
+       
+              
+              Debug.Log("<color=yellow>A</color>");
+              
                 client = new TcpClient();
                 await client.ConnectAsync(server, port);
+                Debug.Log("<color=yellow>B</color>");
                 stream = client.GetStream();
-                Debug.Log("Connected to server");
-                return; // 成功した場合、メソッドを終了
+                if(client != null && stream != null )
+                {
+                    Debug.Log("Connected");
+                     return; // 成功した場合、メソッドを終了
+                }
+                attempts++;
     
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"Unexpected error: {e.Message}");
-        }
+                Debug.Log($"Retrying connection... Attempt {attempts + 1}");
+                await Task.Delay(1500); // 次の試行まで待機
+               
+    
+    }
+    
 
-        attempts++;
-    
-            Debug.Log($"Retrying connection... Attempt {attempts + 1}");
-            await Task.Delay(1500); // 次の試行まで待機
+     
   
     }
 
      
-    }
+    
 
 
     public bool GetIsConnectedToServer() 

@@ -105,17 +105,22 @@ public class ObjectSpawner : MonoBehaviour
 
         string spawnObject = shuwaDetectorData.top_labels[0];
 
-
-
+        
         List<DetectedObject> detectedObjects = new List<DetectedObject>();
           for(int i = 0 ; i< 3 ; i++)
          {
 
-           
+
+            var detectedObjectName = shuwaDetectorData.top_labels[i]; 
+
+         
+
             
-            ToolObject toolObject = toolObjectList.Find(x => x.GetToolObjectSO().objectName == shuwaDetectorData.top_labels[i]);
-            KitchenObject kitchenObject = kitchenObjectList.Find(x => x.GetKitchenObjectSO().objectName == shuwaDetectorData.top_labels[i]);
-    
+            ToolObject toolObject = toolObjectList.Find(x => x.GetToolObjectSO().objectName == detectedObjectName);
+            KitchenObject kitchenObject = kitchenObjectList.Find(x => x.GetKitchenObjectSO().objectName == detectedObjectName);
+
+            
+
             if(toolObject)
             {
                 DetectedObject detectedObject = new DetectedObject(){name = toolObject.GetToolObjectSO().objectName, sprite = toolObject.GetToolObjectSO().sprite, probability = shuwaDetectorData.dists[i]};
@@ -147,8 +152,8 @@ public class ObjectSpawner : MonoBehaviour
     private void HandleObjectSpawn(string spawnObject)
     {
 
-       spawnObject = spawnObject == "Beef" ? "Meat Patty Uncooked" : spawnObject;
-     
+       
+    
         ToolObject toolObject = toolObjectList.Find(x => x.GetToolObjectSO().objectName == spawnObject);
         KitchenObject kitchenObject = kitchenObjectList.Find(x => x.GetKitchenObjectSO().objectName == spawnObject);
 
