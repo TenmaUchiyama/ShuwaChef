@@ -144,4 +144,3 @@ hk_knn/
 *.exe
 knn_database/
 train_ckpts/
-data/

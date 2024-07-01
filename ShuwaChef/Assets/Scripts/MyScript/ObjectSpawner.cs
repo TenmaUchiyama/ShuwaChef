@@ -147,7 +147,7 @@ public class ObjectSpawner : MonoBehaviour
     private void HandleObjectSpawn(string spawnObject)
     {
 
-       
+       spawnObject = spawnObject == "Beef" ? "Meat Patty Uncooked" : spawnObject;
      
         ToolObject toolObject = toolObjectList.Find(x => x.GetToolObjectSO().objectName == spawnObject);
         KitchenObject kitchenObject = kitchenObjectList.Find(x => x.GetKitchenObjectSO().objectName == spawnObject);
