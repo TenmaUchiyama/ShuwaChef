@@ -6,7 +6,7 @@ import json
 import time
 
 class ShuwaServer:
-    def __init__(self, ip='localhost', port=8808):
+    def __init__(self, ip='localhost', port=4531):
         
 
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
