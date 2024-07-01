@@ -56,8 +56,9 @@ class HolisticManager():
 
         if mp_results.right_hand_landmarks is not None:
             rh_3d = utils.parse_landmarks(mp_results.right_hand_landmarks.landmark)
-
+        
         # Draw.
         utils.mp_draw(frame, mp_results)
+
 
         return {"pose_4d": pose_4d, "face_3d": face_3d, "lh_3d": lh_3d, "rh_3d": rh_3d}

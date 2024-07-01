@@ -27,15 +27,42 @@ public class DeliveryManager : MonoBehaviour {
 
     private void Awake() {
         Instance = this;
-
-
         waitingRecipeSOList = new List<RecipeSO>();
     }
 
+    private void Start() {
+
+
+        if(!KitchenGameManager.Instance.isPractice)
+        {
+             RecipeSO waitingRecipeSO = recipeListSO.recipeSOList[UnityEngine.Random.Range(0, recipeListSO.recipeSOList.Count)];
+
+                waitingRecipeSOList.Add(waitingRecipeSO);
+
+                OnRecipeSpawned?.Invoke(this, EventArgs.Empty);
+
+
+                return;
+        }else{
+       
+
+
+        waitingRecipeSOList = recipeListSO.recipeSOList; 
+        OnRecipeSpawned?.Invoke(this, EventArgs.Empty);
+        }
+
+    }
+
     private void Update() {
+
+        if(KitchenGameManager.Instance.isPractice) return; 
+        
         spawnRecipeTimer -= Time.deltaTime;
         if (spawnRecipeTimer <= 0f) {
             spawnRecipeTimer = spawnRecipeTimerMax;
+
+
+
 
             if (KitchenGameManager.Instance.IsGamePlaying() && waitingRecipeSOList.Count < waitingRecipesMax) {
                 RecipeSO waitingRecipeSO = recipeListSO.recipeSOList[UnityEngine.Random.Range(0, recipeListSO.recipeSOList.Count)];
@@ -76,7 +103,7 @@ public class DeliveryManager : MonoBehaviour {
 
                     successfulRecipesAmount++;
 
-                    waitingRecipeSOList.RemoveAt(i);
+                    if(!KitchenGameManager.Instance.isPractice) waitingRecipeSOList.RemoveAt(i);
 
                     OnRecipeCompleted?.Invoke(this, EventArgs.Empty);
                     OnRecipeSuccess?.Invoke(this, EventArgs.Empty);

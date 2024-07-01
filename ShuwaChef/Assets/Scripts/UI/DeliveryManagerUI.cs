@@ -29,6 +29,9 @@ public class DeliveryManagerUI : MonoBehaviour {
     }
 
     private void UpdateVisual() {
+
+
+        Debug.Log("===============================");
         foreach (Transform child in container) {
             if (child == recipeTemplate) continue;
             Destroy(child.gameObject);

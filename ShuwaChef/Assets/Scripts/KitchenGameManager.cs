@@ -8,6 +8,7 @@ public class KitchenGameManager : MonoBehaviour {
 
 
     [SerializeField] private ShuwaServerCommunicator socketCommunicator;
+    public bool isPractice = false; 
     public static KitchenGameManager Instance { get; private set; }
 
 
@@ -68,6 +69,7 @@ public class KitchenGameManager : MonoBehaviour {
             case State.WaitingToStart:
                 break;
             case State.CountdownToStart:
+          
                 countdownToStartTimer -= Time.deltaTime;
                 if (countdownToStartTimer < 0f) {
                     state = State.GamePlaying;
@@ -76,6 +78,7 @@ public class KitchenGameManager : MonoBehaviour {
                 }
                 break;
             case State.GamePlaying:
+                  if(isPractice) return;
                 gamePlayingTimer -= Time.deltaTime;
                 if (gamePlayingTimer < 0f) {
                     state = State.GameOver;
