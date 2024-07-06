@@ -107,8 +107,6 @@ class TranslatorManager():
 
     def run_knn(self, feats: npt.ArrayLike, k=3):
         
-        print(feats)
-        print(self.knn_database)
         
         dists = np.square(self.knn_database - feats)
         dists = np.sqrt(np.sum(dists, axis=-1))
