@@ -39,10 +39,10 @@ class ShuwaDetector(Pipeline):
                 return
 
 
-            if len(self.pose_history) < 16:
+            if len(self.pose_history) < 10:
                 print("Video too short.")
                 self.reset_pipeline()
-                return
+                return 0 
 
             vid_res = {
                 "pose_frames": np.stack(self.pose_history),

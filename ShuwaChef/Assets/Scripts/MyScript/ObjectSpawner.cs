@@ -86,10 +86,15 @@ public class ObjectSpawner : MonoBehaviour
 
         Debug.Log($"<color=yellow>{e.message}</color>");
 
-        
-        if(e.message == "record")
+        if (e.message == "0")
         {
-          Debug.Log("Recording");
+        
+            recordingLabel.SetActive(false);
+            return;
+        }
+        if (e.message == "record")
+        {
+     
             recordingLabel.SetActive(true);
           return;
         }

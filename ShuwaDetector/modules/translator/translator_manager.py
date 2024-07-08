@@ -14,6 +14,7 @@
 
 import logging
 from pathlib import Path
+import time
 
 import gin
 import numpy as np
@@ -106,7 +107,7 @@ class TranslatorManager():
         return 1- e_x / e_x.sum(axis=0)
 
     def run_knn(self, feats: npt.ArrayLike, k=3):
-        
+        start_time = time.time()
         print(feats)
         print(self.knn_database)
         
@@ -131,7 +132,8 @@ class TranslatorManager():
             output_label.append(top_lables[top_indices[i]])
             output_probs.append(probabilities[top_indices[i]])
         
-
+        end_time = time.time()
+        print("KNN time: ", end_time - start_time)
         
 
         return {

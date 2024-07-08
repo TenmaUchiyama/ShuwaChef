@@ -113,6 +113,7 @@ class Application(DemoGUI, Pipeline):
 
         t2 = time.time() - t1
         cv2.putText(frame_rgb, "{:.0f} ms".format(t2 * 1000), (10, 50), cv2.FONT_HERSHEY_DUPLEX, 1, (203, 52, 247), 1)
+        cv2.flip(frame_rgb,1)
         self.show_frame(frame_rgb)
 
         self.root.after(1, self.video_loop)

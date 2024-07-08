@@ -41,11 +41,18 @@ class ShuwaServer:
                     response = None
                     # client_socket.send("Recording".encode('utf-8'))
                     response = self.shuwa_detector.on_record()
+                   
                     if response:
+                        
+
                         print(response)
                         res_json = json.dumps(response)
                         client_socket.send(f"{res_json}".encode('utf-8'))
                     else:
+                        if response == 0: 
+                            print("==========Video Too Shor=============")
+                            client_socket.send("0".encode('utf-8'))
+                            continue
                         client_socket.send("record".encode('utf-8'))
 
 
