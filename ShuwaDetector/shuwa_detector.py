@@ -76,6 +76,7 @@ class ShuwaDetector(Pipeline):
 
             # Apply Holistic Model to the frame            
             self.update(frame_rgb)
+            frame_rgb = cv2.flip(frame_rgb, 1)
 
             cv2.putText(frame_rgb, "Is Recording" if self.is_recording else "Not Recording",(10, 50), cv2.FONT_HERSHEY_DUPLEX, 1, (203, 52, 247), 1)
 
